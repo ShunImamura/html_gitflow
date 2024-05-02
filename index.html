@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>GitHubチームC開発演習</title>
 	<link rel="stylesheet" href="stylesheet.css">
@@ -13,7 +13,7 @@
 			<h1>チーム開発研修練習：teamC</h1>
 		</div>
 		<div class="creation_date">
-			<p>最終編集日: 2024年4月30日</p>
+			<p>最終編集日: 2024年5月2日</p>
 		</div>
 		<div class="index">
 			<h2>目次</h2>
@@ -36,7 +36,7 @@
 
 			<h3>コンフリクトの原因</h3>
 			<hr class="hr_intro" width=25%></hr>
-			<p>コンフリクトの発生原因をもう少し正確に書くと、同じファイルの同じ行が<span style="color: red">同じブランチから派生した</span>別ブランチのコミットで変更されているときに、派生元のブランチにmergeしようとすると発生します。したがって、例えばブランチAがファイルXの2行目を編集してmerge、ブランチBがファイルXの3行目を編集してmergeした場合はコンフリクトは発生しません。しかし、ソースコードの編集は通常複数の行をまたぐため、基本的には同時に編集したら発生してしまうと認識しておけばよいでしょう。</p>
+			<p>コンフリクトの発生原因をもう少し正確に書くと、同じファイルの同じ行が<span style="color: red">同じブランチから派生した</span>別ブランチのコミットで変更されているときに、派生元のブランチにmergeしようとすると発生します。したがって、、例えばブランチAがファイルXの最終行を1行分改行してmerge, ブランチBがファイルXの最終行を2行分改行してmergeするだけでもコンフリクトが発生します。文字を何も入力しなくても、1行の改行だけで変更したと見なされるからです。反対に、ブランチAがファイルXの2行目を編集してmerge、ブランチBがファイルXの3行目を編集してmergeした場合は、同じ行の変更がないためコンフリクトは発生しません。しかし、ソースコードの編>集は通常複数の行をまたぐため、基本的に<span style="color: red">同時に編集したらコンフリクトが発生する</span>と認識しておけばよいでしょう。</p>
 
 			<h3><span id="resolve">コンフリクトの解消</span></h3>
 			<hr class="hr_intro" width=25%></hr>
@@ -101,7 +101,7 @@
 				</li>
 				<li class="push_list">ローカルでコンフリクトが発生しなくなったら、リモートリポジトリにpushする。ちなみに、このときの-uオプションでupstreamを設定している。
 				<div class="push_flow">
-					<p id="copycode_push" class="copy_code_flow">git push -u origin develop</p>
+					<p id="copycode_push" class="copy_code_flow">git push -u origin feature_hoge</p>
 					<button onclick="copyButton('copycode_push')" class="copy_button">Copy</button>
 				</div>
 				</li>
