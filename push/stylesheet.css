@@ -1,0 +1,115 @@
+html{
+	scroll-behavior: smooth;
+}
+
+main{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.top_title{
+	padding-top: 15px;
+	text-align: center;
+}
+
+.creation_date{
+	padding-right: 45px;
+	text-align: right;
+}
+
+.index{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	background-color: #fce4d6;
+}
+
+.Introduction{
+	margin-top: 60px;
+}
+
+.hr_intro{
+	border-top: 2px dashed blue;
+	text-align: left;
+	margin-left: 0px;
+	margin-top: -10px;
+}
+
+
+.qiita_conflict{
+	text-align: center;
+}
+
+.qiita_conflict_link{
+	position: relative;
+	text-decoration: none;
+	display: inline-block;
+	transition: 0.3s;
+}
+
+.qiita_conflict_link::after{
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	content: '';
+	width: 0;
+	height: 2px;
+	background-color: green;
+	transition: 0.3s;
+	transform: translateX(-50%);
+}
+.qiita_conflict_link:hover::after{
+	width: 100%;
+}
+
+.upstream_link{
+	text-decoration: none;
+}
+
+.resolve_link{
+	text-decoration: none;
+}
+
+.copy_code{
+	float: left;
+	margin: 10px;
+	padding: 15px;
+	background-color: #d3d3d3
+}
+
+.copy_button{
+	margin-top: 25px;
+	height: 25px;
+	line-height: 20px;
+}
+
+.Gitflow{
+	margin-top: 60px;
+}
+
+.push_flow{
+	display: flex;
+}
+
+.push_list{
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.copy_code_flow{
+	width: fit-content;
+	margin: 10px;
+	padding: 15px;
+	background-color: #d3d3d3
+}
+
+.Practice1{
+	margin-top: 60px;
+}
+
+.Practice2{
+	margin-top: 60px;
+}
+.Practice3{
+	margin-top: 60px;
+}

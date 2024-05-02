@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>GitHubチームC開発演習</title>
+	<link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+	<main>
+		<div class="top_title">
+			<h1>チーム開発研修練習：teamC</h1>
+		</div>
+		<div class="creation_date">
+			<p>最終編集日: 2024年5月2日</p>
+		</div>
+		<div class="index">
+			<h2>目次</h2>
+			<p><a href="#introduction">コンフリクトについて共通の認識を持とう</a></p>
+			<p><a href="#gitflow">リモートリポジトリにpushするまでの流れ（<b>必読</b>）</a></p>
+			<p><a href="#practice1">練習1: コンフリクトを解消しよう</a></p>
+			<p><a href="#practice2">練習2: テキストファイルをみんなで作ろう</a></p>
+			<p><a href="#practice3">練習3: 素因数分解のソースコードをみんなで作り上げよう</a></p>
+		</div>
+		<div class="warning">
+			<p><span style="font-size:2em;">&#x26A0;&#xFE0F;</span>本ページの内容は最終編集日時点での筆者の知識によることと、初学者にもわかりやすい表現を優先して書かれていることにより正確でない場合があります。誤りを発見した際には<strike>優しくこっそり</strike>教えていただけると幸いです。</p>
+		</div>
+
+		<div class="Introduction">
+			<h2><span id="introduction">コンフリクトについて共通の認識を持とう</span></h2>
+			<h3>コンフリクトとは</h3>
+			<hr class="hr_intro" width=25%></hr>
+			<p>"conflict"は和訳すると「衝突, 対立」であり、Gitではブランチをmergeする際に互いの変更点が重なってしまうことを意味します。簡単にいうと、同じファイルを同時に編集しその内容が異なるときにGitHubがどちらを優先してよいのか分からずmergeが突っぱねられてしまうということです。コンフリクトが起こってしまうと、mergeすることができません。ただし、コンフリクトは悪いことでもチームに迷惑をかけることでもありません。コンフリクトが起きてもGitHub上でmergeできないだけなので、元のファイルが壊れるとか最初からコードを書き直すといったことにはならないからです。焦って何かを削除したり権限を変更したりせず、後述の手順を守って落ち着いて対処しましょう。</p>
+			<p>というのが一般論ですが、teamCでは<span style="color: red">ローカル上でmergeテストをしてからリモートリポジトリにpushする</span>というルールを設けることにするため、そもそもGitHub上でコンフリクトは起きないはずです。それでも起きてしまった場合の対処法も記載するので参考にしてください。</p>
+
+			<h3>コンフリクトの原因</h3>
+			<hr class="hr_intro" width=25%></hr>
+			<p>コンフリクトの発生原因をもう少し正確に書くと、同じファイルの同じ行が<span style="color: red">同じブランチから派生した</span>別ブランチのコミットで変更されているときに、派生元のブランチにmergeしようとすると発生します。したがって、例えばブランチAがファイルXの最終行を1行分改行してmerge, ブランチBがファイルXの最終行を2行分改行してmergeするだけでもコンフリクトが発生します。文字を何も入力しなくても、1行の改行だけで変更したと見なされるからです。反対に、ブランチAがファイルXの2行目を編集してmerge、ブランチBがファイルXの3行目を編集してmergeした場合は、同じ行の変更がないためコンフリクトは発生しません。しかし、ソースコードの編集は通常複数の行をまたぐため、基本的に<span style="color: red">同時に編集したらコンフリクトが発生する</span>と認識しておけばよいでしょう。</p>
+
+			<h3><span id="resolve">コンフリクトの解消</span></h3>
+			<hr class="hr_intro" width=25%></hr>
+			コンフリクトが起きると、解消するまで開発が遅滞します。だったらコンフリクトが起きないようにすればいいじゃないかと思って予防法を調べてみても、「同時に同じファイルを編集しない」くらいしか出てきません。思うに、<span style="color: red">コンフリクトは発生するのが前提で、対処しながら開発を進める</span>のが基本なのでしょう。teamC内だけなら、ファイルを編集中にはその合図を出し、合図がないときに編集を始めるといった方法で恐らくコンフリクトをほとんど発生させずに進められると思いますが、いざプロジェクトに配属されたときにコンフリクトに対処できない、とならないようにチーム開発研修においてもコンフリクトを発生させながら進めていく方針とします。
+			<div class="qiita_conflict">
+				<p>コンフリクトの解消方法はこのサイトを参考にしてください。</p>
+				<a class="qiita_conflict_link" href="https://qiita.com/shizen-shin/items/391aac7b9febaf11bde6" target="_blank" rel="noopener noreferrer"><span style="font-size: 1.5em">サイトへGO!!</a>
+			</div>
+			<p>いくつか提示されている解決手法のうち、「手動でファイルを修正する」が一番全メンバーの成長につながると思います。ソースコードの理解が必要となるので難しいですが、できればそうしたいですね。簡単にいうと、<span style="color: red">コンフリクトが起きたファイルを特定し、該当箇所を手動で修正し（ここでソースコードの理解が必要なので分からなかったら訊く！）、addしてcommitする。</span>このcommitの際、次のようなエラーが出ることがあります。</p>
+
+			<img src="error_message.png" alt="エラーコードの画像">
+			<p>この場合はcommitに -i オプションをつければ、コンフリクトしたmergeを終了してcommitしてくれるのでうまくいくはずです。</p>
+			<p id="copycode_i" class="copy_code">git commit -i hoge.txt</p>
+			<button onclick="copyButton('copycode_i')" class="copy_button">Copy</button>
+		</div>
+		<div class="Gitflow">
+			<h2><span id="gitflow">リモートリポジトリにpushするまでの流れ</span></h2>
+			<p>miroの手順書はあくまで最低限GitHubを使うための覚書です。teamCでは、実際の開発現場のルールにより近づけるために以下の手順に従ってください。なお、Gitを用いた開発の流れを示したgit flowというものがありますが、その簡易版のようなものとなっています。</p>
+			<ol start="0">
+				<li class="push_list">miroの手順書の10まで（リモートリポジトリをoriginに設定するまで）が完了している状態にする。</li>
+				<li class="push_list">ローカルのdevelopブランチにリモートリポジトリ上のdevelopブランチの最新の状態を持ってくる。
+				<div class="push_flow">
+					<p id="copycode_pull" class="copy_code_flow">git pull origin develop</p>
+					<button onclick="copyButton('copycode_pull')" class="copy_button">Copy</button>
+				</div>
+				</li>
+				<li class="push_list">featureブランチを作成。ブランチの名前はfeature_〇〇　※追加する機能が分かるようなものにする。
+				<div class="push_flow">
+					<p id="copycode_br" class="copy_code_flow">git checkout -b feature_hoge</p>
+					<button onclick="copyButton('copycode_br')" class="copy_button">Copy</button>
+				</div>
+				</li>
+				<li class="push_list">ファイルを編集または新規作成してソースコードを書き、機能を実装する。そのファイル単体でテストできるものであるなら、思い通りの挙動をするか確認する。大丈夫そうならaddしてcommitする。どのようなテストをするかは各自の判断に任せます。不安だったら訊いてください。</li>
+				<div class="push_flow">
+					<p id="copycode_add" class="copy_code_flow">git add hoge.java </p>
+					<button onclick="copyButton('copycode_add')" class="copy_button">Copy</button>
+				</div>
+				<div class="push_flow">
+					<p id="copycode_ci" class="copy_code_flow">git commit -m "hoge機能の実装"</p>
+					<button onclick="copyButton('copycode_ci')" class="copy_button">Copy</button>
+				</div>
+				<li class="push_list">developブランチにmergeしても大丈夫かローカルで確認する。まずはdevelopブランチに移動。</li>
+				<div class="push_flow">
+					<p id="copycode_co" class="copy_code_flow">git checkout develop</p>
+					<button onclick="copyButton('copycode_co')" class="copy_button">Copy</button>
+				</div>
+				<p>リモートリポジトリの最新のdevelopの状態にするためにpullする。ちなみに、<a href="https://www-creators.com/archives/4931" class="upstream_link" target="_blank" rel="noopener noreferrer">上流ブランチ</a>がorigin/developに設定されている場合は下記のコードの"origin develop"は不要です。よく分からなかったらそのままでも問題ありません。</p>
+				<div class="push_flow">
+					<p id="copycode_pull" class="copy_code_flow">git pull origin develop</p>
+					<button onclick="copyButton('copycode_br')" class="copy_button">Copy</button>
+				</div>
+				<p>featureブランチに移動し、developブランチをmergeする。</p>
+				<div class="push_flow">
+					<p id="copycode_co2" class="copy_code_flow">git checkout feature_hoge</p>
+					<button onclick="copyButton('copycode_co2')" class="copy_button">Copy</button>
+				</div>
+				<div class="push_flow">
+					<p id="copycode_merge" class="copy_code_flow">git merge develop</p>
+					<button onclick="copyButton('copycode_merge')" class="copy_button">Copy</button>
+				</div>
+				<li class="push_list">コンフリクトが発生した場合、上記の<a href="#resolve" class="resolve_link">コンフリクトの解消</a>を参考にして修正する。修正が完了したら、3のテストから再度行う。
+				</li>
+				<li class="push_list">ローカルでコンフリクトが発生しなくなったら、リモートリポジトリにpushする。ちなみに、このときの-uオプションでupstreamを設定している。
+				<div class="push_flow">
+					<p id="copycode_push" class="copy_code_flow">git push -u origin feature_hoge</p>
+					<button onclick="copyButton('copycode_push')" class="copy_button">Copy</button>
+				</div>
+				</li>
+				<li class="push_list">push後の操作はmiroの手順書の15以降を参考にする。訂正するよう言われた場合、1から再度行う。
+				</li>
+				<li class="push_list">featureブランチがリモートリポジトリでdevelopブランチにmergeされたのを確認して、ローカルのfeatureブランチも削除する。
+				<div class="push_flow">
+					<p id="copycode_del" class="copy_code_flow">git branch -d feature_hoge</p>
+					<button onclick="copyButton('copycode_del')" class="copy_button">Copy</button>
+				</div>
+				</li>
+			</ol>
+		</div>
+		<div class="Practice1">
+			<h2><span id="practice1">練習1: コンフリクトを解消しよう</span></h2>
+		</div>
+
+		<div class="Practice2">
+			<h2><span id="practice2">練習2: テキストファイルをみんなで作ろう</span></h2>
+		</div>
+
+		<div class="Practice3">
+			<h2><span id="practice3">練習3: 素因数分解のソースコードをみんなで作り上げよう</span></h2>
+		</div>
+	</main>
+
+	<script>
+		function copyButton(elementId){
+					var element = document.getElementById(elementId);
+					navigator.clipboard.writeText(element.textContent);
+				}
+
+
+
+	</script>
+	
+</body>
+</html>
