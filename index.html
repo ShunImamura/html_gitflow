@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>GitHubチームC開発演習</title>
 	<link rel="stylesheet" href="stylesheet.css">
@@ -13,12 +13,13 @@
 			<h1>チーム開発研修練習：teamC</h1>
 		</div>
 		<div class="creation_date">
-			<p>最終編集日: 2024年4月30日</p>
+			<p>最終編集日: 2024年5月8日</p>
 		</div>
 		<div class="index">
 			<h2>目次</h2>
 			<p><a href="#introduction">コンフリクトについて共通の認識を持とう</a></p>
 			<p><a href="#gitflow">リモートリポジトリにpushするまでの流れ（<b>必読</b>）</a></p>
+			<p><a href="#PRrule">プルリクエストに関する決め事</a></p>
 			<p><a href="#practice1">練習1: コンフリクトを解消しよう</a></p>
 			<p><a href="#practice2">練習2: テキストファイルをみんなで作ろう</a></p>
 			<p><a href="#practice3">練習3: 素因数分解のソースコードをみんなで作り上げよう</a></p>
@@ -31,12 +32,12 @@
 			<h2><span id="introduction">コンフリクトについて共通の認識を持とう</span></h2>
 			<h3>コンフリクトとは</h3>
 			<hr class="hr_intro" width=25%></hr>
-			<p>"conflict"は和訳すると「衝突, 対立」であり、Gitではブランチをmergeする際に互いの変更点が重なってしまうことを意味します。簡単にいうと、同じファイルを同時に編集しその内容が異なるときにGitHubがどちらを優先してよいのか分からずmergeが突っぱねられてしまうということです。コンフリクトが起こってしまうと、mergeすることができません。ただし、コンフリクトは悪いことでもチームに迷惑をかけることでもありません。コンフリクトが起きてもGitHub上でmergeできないだけなので、元のファイルが壊れるとか最初からコードを書き直すといったことにはならないからです。焦って何かを削除したり権限を変更したりせず、後述の手順を守って落ち着いて対処しましょう。</p>
+			<p>"conflict"は和訳すると「衝突, 対立」であり、Gitではブランチをmergeする際に互いの変更点が重なってしまうことを意味します。簡単にいうと、同じファイルを同時に編集しその内容が異なるときに、GitHubがどちらを優先してよいのか分からずmergeが突っぱねられてしまうということです。コンフリクトが起こってしまうと、mergeすることができません。ただし、コンフリクトは悪いことでもチームに迷惑をかけることでもありません。コンフリクトが起きてもGitHub上でmergeできないだけなので、元のファイルが壊れるとか最初からコードを書き直すといったことにはならないからです。焦って何かを削除したり権限を変更したりせず、後述の手順を守って落ち着いて対処しましょう。</p>
 			<p>というのが一般論ですが、teamCでは<span style="color: red">ローカル上でmergeテストをしてからリモートリポジトリにpushする</span>というルールを設けることにするため、そもそもGitHub上でコンフリクトは起きないはずです。それでも起きてしまった場合の対処法も記載するので参考にしてください。</p>
 
 			<h3>コンフリクトの原因</h3>
 			<hr class="hr_intro" width=25%></hr>
-			<p>コンフリクトの発生原因をもう少し正確に書くと、同じファイルの同じ行が<span style="color: red">同じブランチから派生した</span>別ブランチのコミットで変更されているときに、派生元のブランチにmergeしようとすると発生します。したがって、例えばブランチAがファイルXの2行目を編集してmerge、ブランチBがファイルXの3行目を編集してmergeした場合はコンフリクトは発生しません。しかし、ソースコードの編集は通常複数の行をまたぐため、基本的には同時に編集したら発生してしまうと認識しておけばよいでしょう。</p>
+			<p>コンフリクトの発生原因をもう少し正確に書くと、同じファイルの同じ行が<span style="color: red">同じブランチから派生した</span>別ブランチのコミットで変更されているときに、派生元のブランチにmergeしようとすると発生します。したがって、例えばブランチAがファイルXの最終行を1行分改行してmerge, ブランチBがファイルXの最終行を2行分改行してmergeするだけでもコンフリクトが発生します。文字を何も入力しなくても、1行の改行だけで変更したと見なされるからです。反対に、ブランチAがファイルXの2行目を編集してmerge、ブランチBがファイルXの3行目を編集してmergeした場合は、同じ行の変更がないためコンフリクトは発生しません。しかし、ソースコードの編集は通常複数の行をまたぐため、基本的に<span style="color: red">同時に編集したらコンフリクトが発生する</span>と認識しておけばよいでしょう。</p>
 
 			<h3><span id="resolve">コンフリクトの解消</span></h3>
 			<hr class="hr_intro" width=25%></hr>
@@ -83,7 +84,7 @@
 					<p id="copycode_co" class="copy_code_flow">git checkout develop</p>
 					<button onclick="copyButton('copycode_co')" class="copy_button">Copy</button>
 				</div>
-				<p>リモートリポジトリの最新のdevelopの状態にするためにpullする。ちなみに、<a href="https://www-creators.com/archives/4931" class="upstream_link" target="_blank" rel="noopener noreferrer">上流ブランチ</a>がorigin/developに設定されている場合は下記のコードの"origin develop"は不要です。よく分からなかったらそのままでも問題ありません。</p>
+				<p>ローカルのdevelopブランチをリモートリポジトリの最新のdevelopと同じ状態にするためにpullする。ちなみに、<a href="https://www-creators.com/archives/4931" class="upstream_link" target="_blank" rel="noopener noreferrer">上流ブランチ</a>がorigin/developに設定されている場合は下記のコードの"origin develop"は不要です。よく分からなかったらそのままでも問題ありません。</p>
 				<div class="push_flow">
 					<p id="copycode_pull" class="copy_code_flow">git pull origin develop</p>
 					<button onclick="copyButton('copycode_br')" class="copy_button">Copy</button>
@@ -99,13 +100,15 @@
 				</div>
 				<li class="push_list">コンフリクトが発生した場合、上記の<a href="#resolve" class="resolve_link">コンフリクトの解消</a>を参考にして修正する。修正が完了したら、3のテストから再度行う。
 				</li>
-				<li class="push_list">ローカルでコンフリクトが発生しなくなったら、リモートリポジトリにpushする。ちなみに、このときの-uオプションでupstreamを設定している。
+				<li class="push_list">ローカルでコンフリクトが発生しなくなったら、リモートリポジトリにpushする。ちなみに、このときの-uオプションで上流ブランチを設定している。
 				<div class="push_flow">
-					<p id="copycode_push" class="copy_code_flow">git push -u origin develop</p>
+					<p id="copycode_push" class="copy_code_flow">git push -u origin feature_hoge</p>
 					<button onclick="copyButton('copycode_push')" class="copy_button">Copy</button>
 				</div>
 				</li>
 				<li class="push_list">push後の操作はmiroの手順書の15以降を参考にする。訂正するよう言われた場合、1から再度行う。
+				</li>
+				<li>リモートリポジトリでmergeしようとしてコンフリクトが起きた場合、おそらくローカルのdevelopブランチを最新の状態にすることを忘れていることが原因であるため、4から再度行ってローカル上でコンフリクトを解消する。
 				</li>
 				<li class="push_list">featureブランチがリモートリポジトリでdevelopブランチにmergeされたのを確認して、ローカルのfeatureブランチも削除する。
 				<div class="push_flow">
@@ -115,9 +118,33 @@
 				</li>
 			</ol>
 		</div>
+		<div class="pullRequest">
+			<h2><span id="PRrule">プルリクエストに関する決め事</span></h2>
+			teamCでの開発研修における、プルリクエストに関する3つの掟を記載します。チームによってルールは様々ですが、この3つはそう特殊なものでもないはずなので厳守すること。
+			<ul>
+				<li><mark>reviewer</mark>の人数は基本的に<mark><b>2人</b></mark>。<mark>ソースコードを書いた人が適当に選定</mark>してください。作業内容が関係あるとか、この言語はこの人が詳しいとか、この人暇そうだなとか<strike>この人は個人的に好き/嫌いとか</strike>を考慮すること。何かしらの事情がある場合はreviewerに3人以上指名しても構いません。</li>
+				<li>プルリクエストが来た（＝reviewerに指名された）人は、原則<mark><b>個人の作業よりreviewを優先</b></mark>してください。reviewが遅いと関係する人全員の作業が止まることになるためです。ただし、期限や時間があらかじめ決まっているものがある場合はそちらを優先してください。いつまでにはやります、などコミュニケーションを積極的にとりましょう。</li>
+				<li>GitHub上での<mark><b>mergeはソースコードを書いた人</b></mark>が行いましょう。reviewer全員からapproveをもらえたのを確認して、mergeします。miroの手順書19と20を参考にしてください。</li>
+			</ul>
+		</div>
 		<div class="Practice1">
 			<h2><span id="practice1">練習1: コンフリクトを解消しよう</span></h2>
+			<p>まずはリモートリポジトリへのpushとコンフリクトの対処手順を確認しながら行いましょう。やることは「<span style="color: red">しりとり</span>」です。2周ほどすればpushの流れと基本的なコンフリクトの対処で躓くことはなくなると思いますが、2周目は時間と相談しながらで。まず1周目は順番を決めて1人ずつコンフリクト対処の練習をしましょう。ここでは、プレイヤーの名前をA, B, C, D, Eとして説明します。</p>
 		</div>
+		<ol type="I">
+			<li class="prac1_list">Aがローカルのfeatureブランチでsiritori.txtを作成し、先頭行に適当な単語を書いてpushし、リモートのdevelopブランチにmergeする。</li>
+			<li class="prac1_list">AとBがリモートのdevelopブランチをローカルのdevelopブランチにpullする。それぞれが&quot;feature_名前&quot;ブランチを作成し、<a href="#gitflow" class="push_flow_link">pushするまでの流れ</a>における3を行う。しりとりが成立するように次行に単語を追加する。</li>
+			<li class="prac1_list">Aのみが4から9まで行い、mergeを完了させる。</li>
+			<li class="prac1_list">続いてBが4を行う。するとコンフリクトが発生するはずなので、対処する。しりとりが成立するようにテキストファイルを編集し(Aが書いた2つの単語のあとに3行目にもう1つ追加する）、4から9まで行う。</li>
+			<li class="prac1_list">次にBとCがdevelopブランチをpullする。同じようにそれぞれが&quot;feature_名前&quot;ブランチを作成し、ファイルの4行目に単語を追加する。</li>
+			<li class="prac1_list">Bのみが4から9を行いmergeした後にCが4を行い、コンフリクトを発生させて対処する。</li>
+			<li class="prac1_list">それを繰り返し行い、EとAでコンフリクトが生じAが11行目に単語を追加しリモートリポジトリ上のdevelopブランチにmergeできたら1周目終了。</li>
+			<button class="hidden_button" onclick="hidden_text()">2周目：決め打ちせずにやってみよう</button>
+			<div id="hidden1" style="display: none;">
+				<li class="prac1_list">2周目は、順番を決めずに適当なタイミングで誰かがしりとりをつなげていく。コンフリクトが発生したらその都度対処する。</li>
+				<li class="prac1_list">全員が1つか2つ単語を書いて、「麻雀」という単語が書かれたら終了。</li>
+			</div>
+		</ol>
 
 		<div class="Practice2">
 			<h2><span id="practice2">練習2: テキストファイルをみんなで作ろう</span></h2>
@@ -132,6 +159,15 @@
 		function copyButton(elementId){
 					var element = document.getElementById(elementId);
 					navigator.clipboard.writeText(element.textContent);
+				}
+
+		function hidden_text(){
+					var textElement = document.getElementById("hidden1");
+					if (textElement.style.display === "none"){
+								textElement.style.display = "block";
+							}else{
+								textElement.style.display = "none";
+									}
 				}
 
 
